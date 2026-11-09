@@ -1,3 +1,4 @@
+import base64
 import sqlite3
 import pytest
 import unittest
@@ -93,6 +94,29 @@ def test_jid_label_prefers_saved_contact(tmp_path):
     assert ios_handler._jid_label("1@lid", data) == "Saved Name"
     assert ios_handler._jid_label("2@lid", data) == "+61400000002"
     assert ios_handler._jid_label("9@lid", data) == "9"
+
+
+def encoded_info(fields):
+    return base64.b64encode(fields).decode()
+
+
+def test_is_edited_detects_field_seven():
+    edited = encoded_info(b"\x08\x01\x3a\x03abc")
+    assert ios_handler._is_edited(0, edited) is True
+
+
+def test_is_edited_without_field_seven():
+    assert ios_handler._is_edited(0, encoded_info(b"\x08\x01\x48\x01")) is False
+
+
+@pytest.mark.parametrize("message_type,info", [
+    (0, None),
+    (0, ""),
+    (0, "not base64!"),
+    (1, encoded_info(b"\x3a\x03abc")),
+])
+def test_is_edited_ignores_other_values(message_type, info):
+    assert ios_handler._is_edited(message_type, info) is False
 
 
 def make_contacts_db(rows, with_lid=True):

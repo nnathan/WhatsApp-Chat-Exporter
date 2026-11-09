@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import base64
 import json
 import os
 import logging
@@ -222,7 +223,8 @@ def messages(db, data, media_folder, timezone_offset, filter_date, filter_chat, 
             ZMETADATA,
             ZSTANZAID,
             ZGROUPINFO,
-            ZSENTDATE
+            ZSENTDATE,
+            ZWAMESSAGE.ZPUSHNAME
         FROM ZWAMESSAGE
             LEFT JOIN ZWAGROUPMEMBER
                 ON ZWAMESSAGE.ZGROUPMEMBER = ZWAGROUPMEMBER.Z_PK
@@ -301,6 +303,7 @@ def messages(db, data, media_folder, timezone_offset, filter_date, filter_chat, 
             # Process message data
             invalid = process_message_data(
                 message, content, is_group_message, data, message_map)
+            message.edited = _is_edited(content["ZMESSAGETYPE"], content["ZPUSHNAME"])
 
             # Add valid messages to chat
             if not invalid:
@@ -416,6 +419,21 @@ def _jid_label(jid, data):
     if label:
         return label
     return jid.split('@')[0] if "@" in jid else None
+
+
+def _is_edited(message_type, encoded_info):
+    """Check whether a text message was edited.
+
+    For messages, ZPUSHNAME holds base64-encoded protobuf rather than a name.
+    Field 7 marks edited text messages in the backups examined.
+    """
+    if message_type != 0 or not encoded_info:
+        return False
+    try:
+        fields = decode_protobuf_fields(base64.b64decode(encoded_info, validate=True))
+    except ValueError:
+        return False
+    return any(field == 7 and wire_type == 'bytes' for field, wire_type, _ in fields)
 
 
 def process_message_data(message, content, is_group_message, data, message_map):
