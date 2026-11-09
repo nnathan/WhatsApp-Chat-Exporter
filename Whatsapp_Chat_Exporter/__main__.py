@@ -177,6 +177,10 @@ def setup_argument_parser() -> ArgumentParser:
         help="Use the old Telegram-alike theme"
     )
     html_group.add_argument(
+        "--desktop", dest="desktop", default=False, action='store_true',
+        help="Use a full-window layout styled like WhatsApp Desktop"
+    )
+    html_group.add_argument(
         "--headline", dest="headline", default="Chat history with ??",
         help="The custom headline for the HTML output. Use '??' as a placeholder for the chat name"
     )
@@ -368,6 +372,10 @@ def validate_args(parser: ArgumentParser, args) -> None:
     # Theme validation
     if args.telegram_theme:
         args.template = "whatsapp_old.html"
+    if args.desktop:
+        if args.template is not None:
+            parser.error("--desktop can only be used with the default theme.")
+        args.template = "whatsapp_desktop.html"
 
     # Chat filter validation
     if args.filter_chat_include is not None and args.filter_chat_exclude is not None:
@@ -666,7 +674,7 @@ def create_output_files(args, data: ChatCollection) -> None:
             args.offline,
             args.size,
             args.no_avatar,
-            args.telegram_theme,
+            args.telegram_theme or args.desktop,
             args.headline
         )
 
@@ -756,7 +764,7 @@ def process_exported_chat(args, data: ChatCollection) -> None:
             args.offline,
             args.size,
             args.no_avatar,
-            args.telegram_theme,
+            args.telegram_theme or args.desktop,
             args.headline
         )
 
@@ -849,7 +857,7 @@ def main():
             args.offline,
             args.size,
             args.no_avatar,
-            args.telegram_theme,
+            args.telegram_theme or args.desktop,
             args.headline
         )
     elif args.exported:

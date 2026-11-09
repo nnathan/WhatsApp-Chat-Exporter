@@ -176,7 +176,7 @@ usage: wtsexporter [-h] [--debug] [-a] [-i] [-e EXPORTED] [-w WA] [-m MEDIA] [-b
                    [-k [KEY]] [--call-db [CALL_DB_IOS]] [--wab WAB] [-o OUTPUT] [-j [JSON]]
                    [--txt [TEXT_FORMAT]] [--no-html] [--size [SIZE]] [--no-reply] [--avoid-encoding-json]
                    [--pretty-print-json [PRETTY_PRINT_JSON]] [--tg] [--per-chat] [--import] [-t TEMPLATE]
-                   [--offline OFFLINE] [--no-avatar] [--old-theme] [--headline HEADLINE] [-c]
+                   [--offline OFFLINE] [--no-avatar] [--old-theme] [--desktop] [--headline HEADLINE] [-c]
                    [--create-separated-media] [--time-offset {-12 to 14}] [--date DATE]
                    [--date-format FORMAT] [--include [phone number ...]] [--exclude [phone number ...]]
                    [--dont-filter-empty] [--enrich-from-vcards ENRICH_FROM_VCARDS]
@@ -238,6 +238,7 @@ HTML Options:
   --offline OFFLINE     Relative path to offline static files
   --no-avatar           Do not render avatar in HTML output
   --old-theme           Use the old Telegram-alike theme
+  --desktop             Use a full-window layout styled like WhatsApp Desktop
   --headline HEADLINE   The custom headline for the HTML output. Use '??' as a placeholder for the chat
                         name
 
