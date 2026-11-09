@@ -43,9 +43,10 @@ crypt12 = ["pycryptodome>=3.24.1"]
 crypt14 = ["pycryptodome>=3.24.1"]
 crypt15 = ["pycryptodome>=3.24.1", "javaobj-py3>=0.4.4"]
 android_backup = ["pycryptodome>=3.24.1", "javaobj-py3>=0.4.4"]
-backup = ["whatsapp-chat-exporter[android_backup]"]
-all = ["whatsapp-chat-exporter[android_backup]"]
-everything = ["whatsapp-chat-exporter[android_backup]"]
+ios_e2e = ["pycryptodome>=3.24.1", "lzfse>=0.4.2"]
+backup = ["whatsapp-chat-exporter[android_backup,ios_e2e]"]
+all = ["whatsapp-chat-exporter[android_backup,ios_e2e]"]
+everything = ["whatsapp-chat-exporter[android_backup,ios_e2e]"]
 
 [project.scripts]
 wtsexporter = "Whatsapp_Chat_Exporter.__main__:main"
